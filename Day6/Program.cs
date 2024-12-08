@@ -15,61 +15,81 @@ for (int i = 0; i < map.Length; i++)
         }
     }
 }
-try
+
+while (position.x != 0 && position.x != m - 1 && position.y != 0 && position.y != n - 1)
 {
-
-
-    while (!((position.x == 0 && direction == Direction.Left) ||
-        (position.x == m - 1 && direction == Direction.Right) ||
-        (position.y == 0 && direction == Direction.Up) ||
-        (position.y == n - 1 && direction == Direction.Down)))
+    switch (direction)
     {
-        switch (direction)
-        {
-            case Direction.Up:
-                while (map[position.y][position.x] != '#')
+        case Direction.Up:
+            for (int i = position.y; i >= 0; i--)
+            {
+                if (map[i][position.x] == '#')
                 {
-                    map[position.y][position.x] = 'X';
-                    position = (position.x, position.y - 1);
+                    position = (position.x, i + 1);
+                    direction = Direction.Right;
+                    break;
                 }
-                position = (position.x, position.y + 1);
-                direction = Direction.Right;
-                break;
-            case Direction.Down:
-                while (map[position.y][position.x] != '#')
+                else
                 {
-                    map[position.y][position.x] = 'X';
-                    position = (position.x, position.y + 1);
+                    map[i][position.x] = 'X';
+                    position = (position.x, i);
                 }
-                position = (position.x, position.y - 1);
-                direction = Direction.Left;
-                break;
-            case Direction.Right:
-                while (map[position.y][position.x] != '#')
+            }
+            break;
+        case Direction.Down:
+            for (int i = position.y; i < n; i++)
+            {
+                if (map[i][position.x] == '#')
                 {
-                    map[position.y][position.x] = 'X';
-                    position = (position.x + 1, position.y);
+                    position = (position.x, i - 1);
+                    direction = Direction.Left;
+                    break;
                 }
-                position = (position.x - 1, position.y);
-                direction = Direction.Down;
-                break;
-            case Direction.Left:
-                while (map[position.y][position.x] != '#')
+                else
                 {
-                    map[position.y][position.x] = 'X';
-                    position = (position.x - 1, position.y);
+                    map[i][position.x] = 'X';
+                    position = (position.x, i);
                 }
-                position = (position.x + 1, position.y);
-                direction = Direction.Up;
-                break;
-        }
+            }
+            break;
+        case Direction.Right:
+            for (int i = position.x; i < m; i++)
+            {
+                if (map[position.y][i] == '#')
+                {
+                    position = (i - 1, position.y);
+                    direction = Direction.Down;
+                    break;
+                }
+                else
+                {
+                    map[position.y][i] = 'X';
+                    position = (i, position.y);
+                }
+            }
+            break;
+        case Direction.Left:
+            for (int i = position.x; i >= 0; i--)
+            {
+                if (map[position.y][i] == '#')
+                {
+                    position = (i + 1, position.y);
+                    direction = Direction.Up;
+                    break;
+                }
+                else
+                {
+                    map[position.y][i] = 'X';
+                    position = (i, position.y);
+                }
+            }
+            break;
     }
 }
-catch (IndexOutOfRangeException)
-{
-    Console.WriteLine(map.Sum(x => x.Count(y => y == 'X')));
-}
-public enum Direction
+
+Console.WriteLine(map.Sum(x => x.Count(y => y == 'X')));
+
+internal enum Direction
 {
     Up,
     Right,
