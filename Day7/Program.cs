@@ -15,7 +15,6 @@ foreach (var input in data)
 {
     bool isMatchFound = false;
     GenerateCombinations(input.expression, input.result, ref sum, ref isMatchFound);
-
 }
 
 Console.WriteLine(sum);
