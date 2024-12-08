@@ -16,38 +16,40 @@ while ((line = streamReader.ReadLine()!) != null)
         });
     data.Add((long.Parse(line[..colonIndex]), new string('(', z.Count(x => x == 'Y') + 1) + expression));
 }
+
 long sum = 0;
 foreach (var input in data)
 {
-    var combinations = new HashSet<string>();
-    GenerateCombinations(input.expression, ref combinations);
-    foreach (var value in combinations)
-    {
-        var result = Evaluate(value);
-        if (result == input.result)
-        {
-            sum += result;
-            break;
-        }
-    }
+    bool isMatchFound = false;
+    GenerateCombinations(input.expression, input.result, ref sum, ref isMatchFound);
 }
 
 Console.WriteLine(sum);
 
-static void GenerateCombinations(string expression, ref HashSet<string> results)
+static void GenerateCombinations(string expression, long targetResult, ref long sum, ref bool isMatchFound)
 {
+    if (isMatchFound) return;
     int index = expression.IndexOf('Y');
     if (index == -1)
     {
-        results.Add(expression);
+        var result = Evaluate(expression);
+        if (result == targetResult)
+        {
+            sum += result;
+            isMatchFound = true;
+        }
         return;
     }
     string withMultiplication = expression.Substring(0, index) + "*" + expression.Substring(index + 1);
-    GenerateCombinations(withMultiplication, ref results);
+    GenerateCombinations(withMultiplication, targetResult, ref sum, ref isMatchFound);
+    if (isMatchFound) return;
+
     string withAddition = expression.Substring(0, index) + "+" + expression.Substring(index + 1);
-    GenerateCombinations(withAddition, ref results);
+    GenerateCombinations(withAddition, targetResult, ref sum, ref isMatchFound);
+    if (isMatchFound) return;
+
     string withConcatenation = expression.Substring(0, index) + "||" + expression.Substring(index + 1);
-    GenerateCombinations(withConcatenation, ref results);
+    GenerateCombinations(withConcatenation, targetResult, ref sum, ref isMatchFound);
 }
 
 static long Evaluate(string expression)
