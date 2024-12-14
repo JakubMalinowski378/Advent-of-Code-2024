@@ -1,31 +1,34 @@
 ﻿using var streamReader = new StreamReader("input.txt");
 var stones = streamReader.ReadLine()!.Split(" ").Select(ulong.Parse).ToList();
-var cache = new Dictionary<ulong, ulong>() { { 0, 1 } };
-int blinkCount = 25;
+var cache = new Dictionary<(ulong, int), ulong>();
+int blinkCount = 75;
 ulong result = 0;
 foreach (var stone in stones)
 {
-    //result += Blink([stone]);
+    result += Ans(stone, blinkCount);
 }
-Console.WriteLine(stones.Count);
+Console.WriteLine(result);
 
-/*ulong Blink(ulong[] stones)
+ulong Ans(ulong x, int n)
 {
-    foreach (var stone in stones)
+    if (n == 0)
+        return 1;
+    if (!cache.ContainsKey((x, n)))
     {
-        if (cache.TryGetValue(stone, out var result))
-            return result;
-        if (stone == 0)
+        ulong result;
+        var xAsString = x.ToString();
+        if (x == 0)
+            result = Ans(1, n - 1);
+        else if (xAsString.Length % 2 == 0)
         {
-            return 1;
+            result = Ans(ulong.Parse(xAsString[..(xAsString.Length / 2)]), n - 1);
+            result += Ans(ulong.Parse(xAsString[(xAsString.Length / 2)..]), n - 1);
         }
-        var asString = stone.ToString();
-        if (asString.Length % 2 == 0)
+        else
         {
-            stones[i] = ulong.Parse(asString[..(asString.Length / 2)]);
-            stones.Add(ulong.Parse(asString[(asString.Length / 2)..]));
-            continue;
+            result = Ans(2024 * x, n - 1);
         }
-        stones[i] *= 2024;
+        cache[(x, n)] = result;
     }
-}*/
+    return cache[(x, n)];
+}
