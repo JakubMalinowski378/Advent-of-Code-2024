@@ -100,11 +100,6 @@ foreach (var move in moves)
             break;
     }
 }
-foreach (var linez in map)
-{
-    Console.WriteLine(string.Join(" ", linez));
-}
-
 int result = 0;
 for (int i = 1; i < n - 1; i++)
 {
