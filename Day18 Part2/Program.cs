@@ -1,16 +1,29 @@
-﻿var data = File.ReadAllLines("input.txt");
+﻿var data = File.ReadAllLines("input.txt")
+    .Select(x => x.Split(',').Select(int.Parse).ToArray()).ToArray();
 const int n = 71;
 var map = new char[n, n];
-for (int i = 0; i < data.Length; i++)
+int left = 0, right = data.Length - 1;
+while (left < right)
 {
-    var parsedDataLine = data[i].Split(',').Select(int.Parse).ToArray();
-    map[parsedDataLine[1], parsedDataLine[0]] = '#';
-    if (!IsReachable((0, 0), (n - 1, n - 1)))
+    int mid = (left + right) / 2;
+    for (int i = left; i <= mid; i++)
     {
-        Console.WriteLine($"{parsedDataLine[0]},{parsedDataLine[1]}");
-        break;
+        map[data[i][1], data[i][0]] = '#';
+    }
+    if (IsReachable((0, 0), (n - 1, n - 1)))
+    {
+        left = mid + 1;
+    }
+    else
+    {
+        for (int i = (left + mid) / 2; i <= mid; i++)
+        {
+            map[data[i][1], data[i][0]] = '\0';
+        }
+        right = mid - 1;
     }
 }
+Console.WriteLine($"{data[left][0]},{data[left][1]}");
 
 bool IsReachable((int x, int y) start, (int x, int y) destination)
 {
